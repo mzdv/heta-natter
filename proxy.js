@@ -2,7 +2,6 @@
  * Created by mzdv on 16.11.14..
  */
 var http = require("http");
-//var url = require("url");
 
 http.createServer(function(req, res) {
 
@@ -35,7 +34,6 @@ http.createServer(function(req, res) {
 
                 serverData.push(chunk);
             });
-
             res.on("end", function() {
                 console.log(serverData);
             })
