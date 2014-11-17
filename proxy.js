@@ -7,6 +7,7 @@ var http = require("http");
 http.createServer(function(req, res) {
 
     var boilerplate = "http://www.";
+    var content = [];
 
     if(req.url === '/')
         res.end("Enter the URL after the / in the browser URL.");
@@ -26,8 +27,12 @@ http.createServer(function(req, res) {
             .on("error", function(e) {
                 console.log("Error in HTTP GET: " + e.message)
             })
-            .on("body", function(data) {    //something in here
-                res.end(data);
+            .on("data", function(chunk) {    //something in here
+                console.log(chunk);
+                content += chunk;
+            })
+            .on("end", function() {
+                console.log(content)
             });
     }
 })
