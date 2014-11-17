@@ -7,6 +7,7 @@ var http = require("http");
 http.createServer(function(req, res) {
 
     var boilerplate = "www.";
+    var serverData = [];
 
     if(req.url === '/')
         res.end("Enter the URL after the / in the browser URL.");
@@ -14,6 +15,7 @@ http.createServer(function(req, res) {
         console.log("Favicon detected; ignoring...");
     else {
         var parsedURL = req.url.substr(1);
+        var httpMethod = req.method;
 
         console.log(parsedURL);
         var destinationURL = boilerplate + parsedURL;
@@ -23,14 +25,19 @@ http.createServer(function(req, res) {
             hostname: destinationURL,
             port: 80,
             path: '/',
-            method: 'GET'
+            method: httpMethod
         };
 
         http.request(options, function(res) {
             res.setEncoding("utf8");
 
             res.on("data", function(chunk) {
-                console.log(chunk);
+
+                serverData.push(chunk);
+            });
+
+            res.on("end", function() {
+                console.log(serverData);
             })
         }).end();
 
@@ -41,3 +48,5 @@ http.createServer(function(req, res) {
     })
 
     .listen(1337);
+
+    console.log("heta-natter running.");
