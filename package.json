@@ -2,5 +2,9 @@
   "name": "hetta-natter",
   "description": "Basic HTTP proxy server in Node.js",
   "repository": "http://github.com/mzdv/hetta-natter",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "dependencies": {
+    "async": "*",
+    "lodash": "*"
+  }
 }

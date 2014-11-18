@@ -2,6 +2,9 @@
  * Created by mzdv on 16.11.14..
  */
 var http = require("http");
+var async = require("async");
+var lodash = require("lodash");
+
 
 http.createServer(function(req, res) {
 
@@ -10,15 +13,14 @@ http.createServer(function(req, res) {
 
     if(req.url === '/')
         res.end("Enter the URL after the / in the browser URL.");
-    else if(req.url === "/favicon.ico")
+    else if (req.url === "/favicon.ico") {
         console.log("Favicon detected; ignoring...");
+    }
     else {
         var parsedURL = req.url.substr(1);
         var httpMethod = req.method;
 
-        console.log(parsedURL);
         var destinationURL = boilerplate + parsedURL;
-        console.log(destinationURL);
 
         var options = {
             hostname: destinationURL,
@@ -27,17 +29,27 @@ http.createServer(function(req, res) {
             method: httpMethod
         };
 
-        http.request(options, function(res) {
-            res.setEncoding("utf8");
+        async.series([
+            function(callback) {
+                http.request(options, function (res) {
+                    res.setEncoding("utf8");
 
-            res.on("data", function(chunk) {
+                    res.on("data", function (chunk) {
+                        serverData.push(chunk);
+                    });
 
-                serverData.push(chunk);
-            });
-            res.on("end", function() {
-                console.log(serverData);
-            })
-        }).end();
+                    res.on("end", function() {
+                        callback(null, serverData);
+                    });
+
+                }).end();
+
+            }
+
+        ], function(err, results) {
+            console.log(lodash.flatten(results));
+        });
+
 
     }
 })
